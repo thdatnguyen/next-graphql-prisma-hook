@@ -91,8 +91,8 @@ class GlobalComponent extends Component {
       <ThemeProvider theme={theme}>
         <GlobalStyled />
         <StyleComp>
-          {/* <Meta /> */}
-          {/* <Header /> */}
+          <Meta />
+          <Header />
           <GridContainer>{this.props.children}</GridContainer>
         </StyleComp>
       </ThemeProvider>

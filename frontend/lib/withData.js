@@ -1,10 +1,11 @@
 import withApollo from 'next-with-apollo';
-import ApolloClient from 'apollo-boost';
+import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { endpoint, prodEndpoint } from '../config';
 // import { LOCAL_STATE_QUERY } from '../components/Cart.component';
-function createClient({ headers }) {
+function createClient({ headers, initialState }) {
   return new ApolloClient({
     uri: process.env.NODE_ENV === 'development' ? endpoint : prodEndpoint,
+    cache: new InMemoryCache().restore(initialState || {}),
     request: (operation) => {
       operation.setContext({
         fetchOptions: {
