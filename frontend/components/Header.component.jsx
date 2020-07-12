@@ -20,6 +20,8 @@ Router.onRouteChangeError = () => {
 const Logo = styled.h1`
   font-size: 4rem;
   margin-left: 2rem;
+  margin-top: 15px;
+  margin-bottom: 15px;
   position: relative;
   z-index: 2;
   transform: skew(-7deg);
@@ -44,7 +46,7 @@ const StyledHeader = styled.header`
   z-index: 1;
   background-color: ${(props) => props.theme.white};
   .bar {
-    border-bottom: 10px solid ${(props) => props.theme.black};
+    border-bottom: 5px solid ${(props) => props.theme.black};
     display: grid;
     grid-template-columns: auto 1fr;
     justify-content: space-between;
