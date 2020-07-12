@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import styled from 'styled-components';
 import Item from './Item.component';
+import Empty from './Empty.component';
 
 const Center = styled.div`
   text-align: center;
@@ -31,15 +32,9 @@ const ALL_ITEMS_QUERY = gql`
 
 function Items() {
   const { loading, error, data } = useQuery(ALL_ITEMS_QUERY);
-  // return (
-  //   <Center>
-  //     {() => {
-
-  //     }}
-  //   </Center>
-  // );
   if (loading) return <p>Loading ...</p>;
   if (error) return <p>Error: {error.message}</p>;
+  if (data?.items?.length < 1) return <Empty />;
   return (
     <Center>
       <ItemsList>
