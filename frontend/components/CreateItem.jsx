@@ -1,19 +1,28 @@
 import React, { useState } from 'react';
 import { gql } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
+import Router from 'next/router';
+
+import Error from './ErrorMessage.component';
 
 import Form from './styles/Form';
-import Error from './ErrorMessage.component';
 
 const CREATE_ITEM_MUTATION = gql`
   mutation CREATE_ITEM_MUTATION(
     $title: String!
     $description: String!
     $price: Int!
+    $image: String
+    $largeImage: String
   ) {
-    createItem(title: $title, description: $description, price: $price) {
+    createItem(
+      title: $title
+      description: $description
+      price: $price
+      image: $image
+      largeImage: $largeImage
+    ) {
       id
-      title
     }
   }
 `;
@@ -21,21 +30,65 @@ const CREATE_ITEM_MUTATION = gql`
 function CreateItem() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  // const [image, setImage] = useState('');
-  // const [largeImage, setLargeImage] = useState('');
+  const [image, setImage] = useState('');
+  const [largeImage, setLargeImage] = useState('');
+  const [altImg, setAltImg] = useState('');
   const [price, setPrice] = useState(0);
-  const [createItem, { loading, error }] = useMutation(CREATE_ITEM_MUTATION);
+  const [createItem, { loading, error }] = useMutation(CREATE_ITEM_MUTATION, {
+    onCompleted: (res) => {
+      Router.push({
+        pathname: '/item',
+        query: { id: res.createItem.id },
+      });
+    },
+  });
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(typeof parseInt(price));
-    createItem({ variables: { title, description, price: parseInt(price) } });
+    createItem({
+      variables: {
+        title,
+        description,
+        price: parseInt(price),
+        image,
+        largeImage,
+      },
+    });
+  }
+
+  async function uploadFile(e) {
+    const files = e.target.files;
+    const data = new FormData();
+    data.append('file', files[0]);
+    data.append('upload_preset', 'ecommerce');
+    const res = await fetch(
+      'https://api.cloudinary.com/v1_1/tadaaaaa/image/upload',
+      {
+        method: 'POST',
+        body: data,
+      }
+    );
+    const file = await res.json();
+    setImage(file.secure_url);
+    setLargeImage(file.eager[0].secure_url);
+    setAltImg(file.original_filename);
   }
 
   return (
     <Form onSubmit={handleSubmit}>
       <Error error={error} />
       <fieldset disabled={loading} aria-busy={loading}>
+        <label htmlFor="file">
+          Image
+          <input
+            type="file"
+            id="file"
+            name="file"
+            placeholder="Upload an image"
+            onChange={(e) => uploadFile(e)}
+          />
+        </label>
+        {image && <img src={image} alt={altImg} />}
         <label htmlFor="title">
           Title
           <input
