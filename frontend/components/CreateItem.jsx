@@ -30,7 +30,7 @@ const CREATE_ITEM_MUTATION = gql`
 function CreateItem() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState({});
   const [largeImage, setLargeImage] = useState('');
   const [altImg, setAltImg] = useState('');
   const [price, setPrice] = useState(0);
